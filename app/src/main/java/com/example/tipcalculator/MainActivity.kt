@@ -104,7 +104,13 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 steps = 24,
                 onValueChange = { sliderPosition = it }
             )
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "0", fontSize = 28.sp)
+                Text(text = "25", fontSize = 28.sp)
+            }
         }
         Text(
             text ="Скидка:",
