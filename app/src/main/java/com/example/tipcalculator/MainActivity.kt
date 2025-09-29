@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -53,6 +55,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(modifier: Modifier = Modifier) {
     val summa = remember{mutableStateOf("")}
     val dishes = remember{mutableStateOf(value = "")}
+    var sliderPosition by remember{mutableStateOf(0f)}
     Column {
         Row(
             verticalAlignment = Alignment.Bottom,
@@ -91,10 +94,18 @@ fun MainScreen(modifier: Modifier = Modifier) {
             .padding(start = 8.dp)
             )
         }
-        Text(
+        Column { Text(
             text ="Чаевые:",
             modifier = Modifier
         )
+            Slider(
+                value = sliderPosition,
+                valueRange = 0f..25f,
+                steps = 24,
+                onValueChange = { sliderPosition = it }
+            )
+
+        }
         Text(
             text ="Скидка:",
             modifier = Modifier,
