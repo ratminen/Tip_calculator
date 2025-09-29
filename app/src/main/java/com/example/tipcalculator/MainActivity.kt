@@ -51,7 +51,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    val message = remember{mutableStateOf("")}
+    val summa = remember{mutableStateOf("")}
+    val dishes = remember{mutableStateOf(value = "")}
     Column {
         Row(
             verticalAlignment = Alignment.Bottom,
@@ -62,16 +63,34 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(end = 8.dp)
             )
             TextField(
-                message.value,
-                {message.value = it},
+                summa.value,
+                {summa.value = it},
                 textStyle = androidx.compose.ui.text.TextStyle(fontSize =  28.sp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
         }
-        Text(
-            text ="Количество блюд:",
+        Row (
+            verticalAlignment = Alignment.Bottom,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text(
+                text ="Количество блюд:",
+                modifier = Modifier
+            )
+            TextField(
+                dishes.value,
+                onValueChange = { input ->
+                    if (input.length <= 3 && input.all { it.isDigit() }) {
+                        dishes.value = input
+                    }
+                },
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize =  28.sp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier
-        )
+            .widthIn(max = 120.dp)
+            .padding(start = 8.dp)
+            )
+        }
         Text(
             text ="Чаевые:",
             modifier = Modifier
