@@ -6,14 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -56,6 +59,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val summa = remember{mutableStateOf("")}
     val dishes = remember{mutableStateOf(value = "")}
     var sliderPosition by remember{mutableStateOf(0f)}
+    var selectedDiscountPercent by remember { mutableStateOf(0) }
     Column {
         Row(
             verticalAlignment = Alignment.Bottom,
@@ -112,14 +116,61 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 Text(text = "25", fontSize = 28.sp)
             }
         }
-        Text(
-            text ="Скидка:",
-            modifier = Modifier,
-            fontSize = 20.sp,
-        )
+        Row(
+            modifier = Modifier.widthIn(max = 400.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top // ← ключевое изменение!
+        ) {
+            Text(
+                text = "Скидка:",
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(top = 4.dp) // опционально: небольшой отступ для визуального выравнивания
+            )
 
+            DiscountRadioButton(
+                text = "3%",
+                isSelected = selectedDiscountPercent == 3,
+                enabled = false
+            )
+            DiscountRadioButton(
+                text = "5%",
+                isSelected = selectedDiscountPercent == 5,
+                enabled = false
+            )
+            DiscountRadioButton(
+                text = "7%",
+                isSelected = selectedDiscountPercent == 7,
+                enabled = false
+            )
+            DiscountRadioButton(
+                text = "10%",
+                isSelected = selectedDiscountPercent == 10,
+                enabled = false
+            )
+        }
     }
 
+}
+
+@Composable
+fun DiscountRadioButton(text: String, isSelected: Boolean, enabled: Boolean) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.width(IntrinsicSize.Min)
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = null,
+            enabled = enabled
+        )
+        Text(
+            text = text,
+            modifier = Modifier.padding(top = 4.dp),
+            fontSize = 16.sp
+        )
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
