@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,11 +57,28 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    val summa = remember{mutableStateOf("")}
-    val dishes = remember{mutableStateOf(value = "")}
-    var sliderPosition by remember{mutableStateOf(0f)}
+    var summa by remember { mutableStateOf("") }
+    var dishes by remember { mutableStateOf("") }
+    var sliderPosition by remember { mutableStateOf(0f) }
     var selectedDiscountPercent by remember { mutableStateOf(0) }
-    Column {
+
+    LaunchedEffect (dishes) {
+        val count = dishes.toIntOrNull() ?: 0
+        selectedDiscountPercent = when {
+            count in 1..2 -> 3
+            count in 3..5 -> 5
+            count in 6..10 -> 7
+            count > 10 -> 10
+            else -> 0
+        }
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         Row(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.fillMaxWidth()
@@ -70,62 +88,70 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(end = 8.dp)
             )
             TextField(
-                summa.value,
-                {summa.value = it},
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize =  28.sp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                value = summa,
+                onValueChange = { summa = it },
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 28.sp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
             )
         }
-        Row (
+
+        Row(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.fillMaxWidth()
-        ){
+        ) {
             Text(
-                text ="Количество блюд:",
-                modifier = Modifier
+                text = "Количество блюд:",
+                modifier = Modifier.padding(end = 8.dp)
             )
             TextField(
-                dishes.value,
+                value = dishes,
                 onValueChange = { input ->
                     if (input.length <= 3 && input.all { it.isDigit() }) {
-                        dishes.value = input
+                        dishes = input
                     }
                 },
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize =  28.sp),
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 28.sp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier
-            .widthIn(max = 120.dp)
-            .padding(start = 8.dp)
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                modifier = Modifier
+                    .widthIn(max = 120.dp)
             )
         }
-        Column { Text(
-            text ="Чаевые:",
-            modifier = Modifier
-        )
+
+        Column {
+            Text(text = "Чаевые:")
             Slider(
                 value = sliderPosition,
                 valueRange = 0f..25f,
                 steps = 24,
-                onValueChange = { sliderPosition = it }
+                onValueChange = { sliderPosition = it },
+                modifier = Modifier.fillMaxWidth()
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "0", fontSize = 28.sp)
-                Text(text = "25", fontSize = 28.sp)
+                Text(text = "0", fontSize = 16.sp)
+                Text(text = "25", fontSize = 16.sp)
             }
         }
+
         Row(
             modifier = Modifier.widthIn(max = 400.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.Top // ← ключевое изменение!
+            verticalAlignment = Alignment.Top
         ) {
             Text(
                 text = "Скидка:",
                 fontSize = 20.sp,
-                modifier = Modifier
-                    .padding(top = 4.dp) // опционально: небольшой отступ для визуального выравнивания
+                modifier = Modifier.padding(top = 4.dp)
             )
 
             DiscountRadioButton(
@@ -150,7 +176,6 @@ fun MainScreen(modifier: Modifier = Modifier) {
             )
         }
     }
-
 }
 
 @Composable
